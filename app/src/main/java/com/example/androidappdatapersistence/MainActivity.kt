@@ -2,6 +2,7 @@ package com.example.androidappdatapersistence
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import java.io.File
@@ -41,6 +43,7 @@ fun MyApp(content: @Composable () -> Unit) {
 
 @Composable
 fun MyScreen() {
+    val context = LocalContext.current
     var textState by remember { mutableStateOf(TextFieldValue()) }
     var message by remember { mutableStateOf("") }
 
@@ -52,13 +55,13 @@ fun MyScreen() {
         )
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Button(onClick = {
-                saveToFile(textState.text)
+                saveToFile(textState.text, context)
                 message = "Data saved"
             }) {
                 Text("Save")
             }
             Button(onClick = {
-                message = retrieveFromFile() ?: "No data in storage"
+                message = retrieveFromFile(context) ?: "No data in storage"
             }) {
                 Text("Retrieve")
             }
@@ -82,17 +85,20 @@ private fun saveToFile(data: String, context: Context) {
             it.write(data.toByteArray())
         }
     } catch (e: Exception) {
-        // Handle exceptions
+        // Log the exception for debugging
+        Log.e("MainActivity", "Error writing to file", e)
     }
 }
+
 
 private fun retrieveFromFile(context: Context): String? {
     return try {
         context.openFileInput("data.txt").bufferedReader().useLines { lines ->
-            lines.fold("") { some, text -> some + text }
+            lines.joinToString("\n")
         }
     } catch (e: Exception) {
-        // Handle exceptions
+        // Log the exception for debugging
+        Log.e("MainActivity", "Error reading from file", e)
         null
     }
 }
