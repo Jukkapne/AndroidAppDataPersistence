@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -50,6 +51,15 @@ android {
 }
 
 dependencies {
+// Room components
+    implementation ("androidx.room:room-runtime:2.6.1") // Latest stable version of Room
+    kapt("androidx.room:room-compiler:2.6.1") // Annotation processor
+    implementation ("androidx.room:room-ktx:2.6.1") // Kotlin Extensions and Coroutines support for Room
+
+// Kotlin Coroutines
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+
+// Be sure to replace the version numbers with the latest versions compatible with your setup
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
